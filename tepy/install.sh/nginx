@@ -1,0 +1,52 @@
+#!/bin/bash
+echo "检查源码编译安装环境"
+echo "gcc-c++  
+wget 
+gdb 
+php-mcrypt 
+libmcrypt  
+libmcrypt-devel 
+gcc
+pcre
+pcre-devel 
+curl
+curl-devel 
+libmcrypt-devel  
+mysql-devel
+libxml2 
+libxml2-devel
+gd
+gd-devel 
+mhash-devel
+zlib-devel  
+libmcrypt-devel
+bzip2
+bzip2-devel 
+autoconf
+libevent
+libevent-devel 
+ntpdate 
+libjpeg
+libjpeg-devel
+libtermcap
+libtermcap-devel
+ncurses 
+ncurses-devel 
+GeoIP
+GeoIP-devel  
+libcurl
+libcurl-devel
+libpcap-devel
+libpcap
+openssl
+openssl-devel" > rpm
+O=$(cat rpm)
+for i in $O
+do
+	rpm -q 
+done
+
+function nginxinstall(){
+echo "install nginx 请选择nginx安装版本"
+
+}

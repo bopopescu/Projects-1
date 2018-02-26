@@ -1,0 +1,4 @@
+linux  install openvpn service
+Centos6.0系统部署openvpn服务端
+yum install epel-release            #安装epel的第三方源 
+yum install openvpn easy-rsa        #安装openvpn和证书生成工具

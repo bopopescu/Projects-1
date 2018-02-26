@@ -1,0 +1,65 @@
+whlie循环
+while  条件:
+    执行代码...  条件满足 就会往下执行 条件不满足 就不往下执行
+
+count = 0
+while count <= 100:
+    print('loop',count)
+    count += 1
+
+只有偶数会打印输出
+count = 0
+while count <= 100:
+    if count %2 == 0:
+        print('loop',count)
+    count += 1
+
+
+#第50次不打印 第60-第80答应对应 的平方
+count = 0
+while count <= 100:
+    if count  == 50:
+        pass   #就是过 也是行符
+    elif count >= 60 and count <= 80:
+        print(count * count)
+    else:
+        print('loop', count)
+#        print('loop',count)
+    count += 1
+
+
+有一种循环叫死循环，一经触发，就运行个天荒地老、海枯石烂。
+
+while 是只要后边条件成立(也就是条件结果为真)就一直执行，怎么让条件一直成立呢？
+
+count = 0
+while True: #True本身就是真呀
+
+    print("你是风儿我是沙,缠缠绵绵到天涯...",count)
+    count +=1
+******************************************************************
+age = 48
+num = 0
+age1 = 0
+while True:
+    age1 = int(input("Age: "))
+    if age1 == age and num < 3:
+        print("答对了")
+        break
+    else:
+        num+=1
+        if num >= 3:
+            print("是否继续?(y/n)")
+            num = 0
+            ss = input()
+            if(ss == "y"):
+                continue
+            else:
+                break
+        else:
+            print("继续")
+            continue
+*************************************************************************
+while ... else ..
+    与其它语言else 一般只与if 搭配不同，在Python 中还有个while ...else 语句
+while 后面的else 作用是指，当while 循环正常执行完，中间没有被break 中止的话，就会执行else后面的语句

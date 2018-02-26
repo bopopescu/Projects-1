@@ -1,0 +1,116 @@
+    1  pwd
+    2  df -h
+    3  pwd
+    4  cd .ssh/
+    5  ls
+    6  ll
+    7  cat authorized_keys 
+    8  pwd
+    9  ll
+   10  cd
+   11  vi /etc/ssh/sshd_config
+   12  servicer sshd restart
+   13  service sshd restart
+   14  tail -f /var/log/secure 
+   15  service sshd restart
+   16  tail -f /var/log/secure 
+   17  vi /etc/ssh/sshd_config
+   18  service sshd restart
+   19  wget http://nginx.org/download/nginx-1.10.3.tar.gz
+   20  wget http://119.9.108.199:3357/iso/mysql-5.6.30.tar.gz 
+   21  useradd -M -s /sbin/nologin mysql
+   22  yum install gd
+   23  yum install gd*
+   24  wget http://119.9.108.199:3357/iso/mysql-5.7.10.tar.gz
+   25  wget                         base                                26 k
+   26  wget http://119.9.108.199:3357/iso/boost_1_59_0.tar.gz
+   27  ls
+   28  mkdir /tar
+   29  cp -av *.gz /tar/
+   30  ls
+   31  chown mysql.mysql /var/log/mysqld/
+   32  chown mysql.mysql /var/log/mysqld
+   33  cd /var/log/
+   34  cd mysqld/
+   35  ls
+   36  tail -f error.log 
+   37  chmod zabbix.zabbix  /var/log/zabbix -R
+   38  chown zabbix.zabbix  /var/log/zabbix -R
+   39  cd ..
+   40  cd zabbix/
+   41  ls
+   42  cd ..
+   43  tail -f messages 
+   44  cd zabbix/
+   45  ls
+   46  cd ..
+   47  tail -f messages 
+   48  cd zabbix/
+   49  ls
+   50  ll
+   51  cd .ll
+   52  ll
+   53  cd ..
+   54  ll
+   55  tail -f messages 
+   56  tail -f php/php-fpm.log 
+   57  cd /usr/local/php/
+   58  cd etc/
+   59  ls
+   60  mv php* /root/
+   61  ls
+   62  cd 
+   63  rm -rf /usr/local/php
+   64  cd php-
+   65  cd php-5.6.30/
+   66  cd ext/
+   67  ls
+   68  cd gd/
+   69  ls
+   70  cd .
+   71  ls
+   72  cd ..
+   73  tail /var/log/php/php-fpm.log 
+   74  tail /var/log/php/php-fpm.log  -f
+   75  ps -ef
+   76  pkill -9 php-fpm
+   77  ls
+   78  cd /usr/local/php/
+   79  ls
+   80  cd etc/
+   81  ls
+   82  mkdir a
+   83  cp -av php* a
+   84  ls
+   85  ll a
+   86  mv a /root/
+   87  cd ..
+   88  rm -rf php
+   89  du php -h
+   90  cd php/etc/
+   91  ks
+   92  ls
+   93  cp -ac /root/a/* ./
+   94  ls
+   95  /etc/init.d/php-fpm start
+   96  find / -name jpeg
+   97  yum install libjpeg-devel freetype-devel libpng-devel
+   98  pkill php-fpm
+   99  /etc/init.d/php-fpm start
+  100  cd
+  101  yum install lrzsz -y
+  102  rz
+  103  ls /var/www/html/zabbix/fonts/DejaVuSans.ttf 
+  104  ls
+  105  mv simhei.ttf  DejaVuSans.ttf
+  106  mkdir china
+  107  mkdir englis
+  108  mv DejaVuSans.ttf china/
+  109  cp -av /var/www/html/zabbix/fonts/DejaVuSans.ttf ./englis/
+  110  cat /var/www/html/index.php 
+  111  cat /usr/local/nginx/vhost/zabbix.conf 
+  112  vim /usr/local/nginx/vhost/zabbix_https.conf 
+  113  history |grep nginx
+  114  vim /usr/local/nginx/vhost/zabbix_https.conf 
+  115  history 
+  116  history  >hist_01

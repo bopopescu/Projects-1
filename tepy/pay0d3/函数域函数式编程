@@ -1,0 +1,79 @@
+            函数域函数式编程
+1介绍：
+	    再过去的十年间，大家广为熟知的编程方法无非两种，面向对象过程，其实，无论那种，都是一种编程的规范或都是如何编程的方法结论，而如今，一种各位古老的编程方式：函数式编程，以其不保存状态，
+	不修改变量等特性重新进入人们的视野，羡慕我们就来以次了解一传统的编程理念，让我们从基础的函数概念开始
+2,初中数学函数定义：
+	    一般的，在一个变化过程中，如果有两个变量x和y。并且对于x的每一个确定的值，y都有唯一确定的值与其对应，那么我们把x称为自变量，把y称为因变量，y是x的函数，自变量x的取值范围叫做这个函数的定义域
+	编程语言中的函数定义：函数是逻辑结构化和过程化的一种编程方法。
+python中函数定义方法：
+	def test():
+	    "The function definitins"
+	    x+=1
+	    return x
+	def: 是定义函数的关键子
+	test: 函数名
+	"" 文档描述（非必要，但是强烈建议你的函数添加描述信息）
+	x+=x: 泛指代码块或者过程出来逻辑
+	return:定义返回值      
+补充说明：
+    函数是编程就是:先定义一个数学函数，然后按照模型用语言去实现它
+ 3：为何使用函数：
+ 		没有函数的编程只是写在逻辑（功能），想脱离函数，重用你的逻辑，唯一的方法就是拷贝
+ 	例一： 
+ 		假设我们编写好了一个逻辑（功能），用来已追加的方式写日志
+ 		with open('a.txt','ab') as f:
+ 			f.write('and action'\n)
+
+ 		现在有三个函数，每个函数在处理完自己的逻辑后，都需要使用上面的逻辑，那么唯一的方法就是，拷贝三次这个逻辑
+ 		def test1():
+ 			print ('test1 starting action...')
+
+ 			with open('a.txt','ab') as f:
+ 		 		f.write('and action')
+
+ 		def test2():
+ 			print ('test2 starting action...')
+ 			
+ 			with open('a.txt','ab') as f:
+ 		 		f.write('and action')
+
+ 		def test3():
+ 			print('test3 starting action...')
+ 			
+ 			with open('a.txt','ab') as f:
+ 		 		f.write('and action')
+ 		那么假设没有>N这个函数都需要使用这段逻辑，你可以拷贝吗？
+ 	例二：
+ 	优化后的代码
+ 		def logger_test():
+ 			with open('a.txt','ab') as f:
+ 			f.write('and action\n')
+ 			
+		def test1():
+ 			print('test1 starting action...')
+ 			logger_test()
+ 		def test2():
+ 			print ('test2 starting action...')
+ 			logger_test()
+ 		def test3():
+ 			print ('test3 starting action...')
+ 			logger_tessst()
+ 	例三：
+ 	需求变了(让我们来为日志加上时间)
+		import  time
+		def logger():
+		    #添加日期时间 模块time时间模块
+		    time_format = "%Y-%m-%d %X"
+		    #time.strftime() 是引用上面的时间格式
+		    time_current = time.strftime(time_format)
+		    with open('a.txt','a+') as f:
+		        f.write("time  %s and action....\n" %time_current)
+		def test1():
+		    print('test1 start ')
+		    logger()
+		def test2():
+		    print('test1 starts ....')
+		    logger()
+		def test3():
+		    print('test3 stalsl')
+		    logger()

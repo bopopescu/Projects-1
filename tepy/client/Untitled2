@@ -1,0 +1,35 @@
+﻿server {
+   listen 80;
+   charset UTF-8;
+   #include /opt/wwwroot/ftp/domain/proxy.domain;
+       server_name www.tuku001.com  tuku001.com www.18tuku.com   18tuku.com  www.kansme.com  kansme.com; 
+        index index.php index.html index.htm;
+ #  root /opt/wwwroot/ftp/website;#access_log /usr/local/nginx/logs/web_access.log main;
+   error_log /usr/local/nginx/logs/www_kansme.error.log;
+   #include vhost-config/d.eny;
+
+  location ~ /\.git {deny all;}
+
+   location / {
+           root  /opt/wwwroot/ftp/website/kansme/www;
+           #error_page  400 401 402 403 404 405 406 407 412 414 500 501 502 503 504 505 /errors/404_asp.html;
+           #rewrite ^/(.+)_(.+).shtml$ /in.do?_controllers=$1&_actions=$2 last;
+                   #rewrite ^/index.html$ /index.php last;
+
+           include /opt/wwwroot/ftp/rewrit/www_kansme.conf;
+
+    }
+
+           location ~ \.php$ {
+                 fastcgi_pass  127.0.0.1:9000;
+                 fastcgi_index   index.php;
+                 fastcgi_read_timeout 900s;
+                 fastcgi_param  SCRIPT_FILENAME  /opt/wwwroot/ftp/website/kansme/www$fastcgi_script_name;
+                 include        fastcgi_params;
+                 #fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+
+                                }
+     
+     location ~* \.(eot|ttf|woff)$ {
+                add_header Access-Control-Allow-Origin '*';
+                }

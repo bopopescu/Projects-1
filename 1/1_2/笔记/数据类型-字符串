@@ -1,0 +1,204 @@
+字符串的定义与创建
+字符串是一个有序的字符的集合，用于存储和表示基本的文本信息，' '或'' ''或''' '''中间包含的内容称之为字符串
+ s = 'Hello,Eva！How are you?'
+
+>>> a = 'jack'
+>>> a
+'jack'
+>>> a = 'alex'
+>>> a
+'alex'
+>>> a
+'alex'
+>>> id(a)
+4364280808
+>>> a = 'jack'
+>>> id(a)
+4364160840
+
+format格式化
+>>> s = 'Hello World'
+>>> s3  = 'my names is {0}, i am {1} years old'
+>>> s3
+'my names is {0}, i am {1} years old'
+>>> s3.format('keivn',24)
+'my names is keivn, i am 24 years old'
+
+>>> s3  = 'my names is {name}, i am {age} years old'
+>>> s3.format(name='kevin',age=22)
+'my names is kevin, i am 22 years old'
+
+s.index('o')
+4
+s.index('o',5,6)
+
+***************************
+>>> '22'.isalnum()
+True
+>>> '22d'.isalnum()
+True
+>>> '22d!'.isalnum()
+False
+>>> ''.isdecimal()
+False
+>>> '33'.isdecimal()
+True
+>>> '22.2'.isdigit()
+False
+>>> '22'.isdigit()
+True
+
+>>> '333'.isidentifier() #变量
+False
+>>> 'd333'.isidentifier()
+True
+
+>>> '3s'.islower()
+True
+>>> '3'.islower()
+False
+
+
+>>>
+>>> '22'.isnumeric()
+True
+>>> '22d'.isnumeric()
+False
+>>> '22.d'.isnumeric()
+False
+
+>>> '33d'.isprintable()
+True
+
+>>> s = 'Hello World'
+>>> s.istitle()
+True
+
+>>> names = ['alex','kevin','joyy']
+>>> ','.join(names)
+'alex,kevin,joyy'
+>>> ''.join(names)
+'alexkevinjoyy'   把列表变成字符串 拼接起来
+
+
+>>> s.ljust(50)  从左边 加常50 不够用其他的补全
+'Hello World                                       '
+>>> s.ljust(50,'-')
+'Hello World---------------------------------------'
+
+>>> len(s.ljust(50,'-'))
+50
+
+>>> s.upper()
+'HELLO WORLD' 全部大写
+
+
+>>> s = '\n hello world'
+>>> s.strip()
+'hello world'
+
+
+>>> s.lstrip()
+'hello world'
+>>> s.rstrip()
+'\n hello world'
+
+
+>>> str_in = 'abcdef'
+>>> str_out = '!@#$%^'
+>>> str.maketrans(str_in.str_out)
+Traceback (most recent call last):
+  File "<input>", line 1, in <module>
+AttributeError: 'str' object has no attribute 'str_out'
+>>> str.maketrans(str_in,str_out)
+{97: 33, 98: 64, 99: 35, 100: 36, 101: 37, 102: 94}
+>>> table = str.maketrans(str_in,str_out)
+>>> table
+{97: 33, 98: 64, 99: 35, 100: 36, 101: 37, 102: 94}
+>>> s
+'\n hello world'
+>>> s.translate(table)
+'\n h%llo worl$'
+
+
+>>> s
+'\n hello world'
+>>> s.translate(table)
+'\n h%llo worl$'
+>>> 'abcdef'.translate(table)
+'!@#$%^'
+
+>>> s.partition('o')
+('\n hell', 'o', ' world')
+
+
+>>> s.replace('h','H') 替换
+'\n Hello world'
+>>> s.replace('h','H')
+'\n Hello world'
+>>> s.replace('o','——')
+'\n hell—— w——rld'
+>>> s.replace('o','-',1)
+'\n hell- world'
+
+
+>>> s
+'\n hello world'
+>>> s = s.strip()
+>>> s
+'hello world'
+>>> s.rfind('o')
+7
+
+>>> s.rindex('o')
+7
+
+
+>>> s
+'hello world'
+>>> s.rpartition('o')
+('hello w', 'o', 'rld')
+
+
+>>> s
+'hello world'
+>>> s.split()
+['hello', 'world']  分成列表
+>>> s.split('o')
+['hell', ' w', 'rld']
+
+>>> s
+'hello world'
+>>> s.rsplit('o')
+['hell', ' w', 'rld']
+>>> s.rsplit('o',1) 之分一次
+['hello w', 'rld']
+
+>>> s.splitlines()
+['hello world'] 安行分
+>>> s = 'a\nb\nalex\nc'
+>>> s.splitlines()
+['a', 'b', 'alex', 'c']
+
+
+>>> s
+'hello world'
+>>> s.startswith('hello')
+True
+>>> s.startswith('hellos')
+False
+
+>>> s.title()
+'Hello World'
+
+>>> s.zfill(40)  不够用0补充40
+'00000000000000000000000000000hello world'
+
+常用
+isdigit
+replace
+count
+strip
+join
+format
+center

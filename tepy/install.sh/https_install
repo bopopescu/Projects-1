@@ -1,0 +1,258 @@
+﻿yum install -y    vim https-tools openssl openssl-devel epel-release makem4 \
+ autoconf bzip2 bzip2-devel gcc curl-devel libjpeg-devel libpng-devel  \
+ freetype-devel gmp-devel pcre-devel glib2-devel libxml2  libxml2-devel \
+ gcc-c++ wget gdb php-mcrypt cloud-init libmcrypt libmcrypt-devel psmisc \
+ cpp zlib-devel curl gd gd-devel mhash-devel autoconf.noarch libevent-devel \
+ subversion libtermcap-devel ncurses-devel GeoIP GeoIP-devel lua lua-devel \
+ libcurl libcurl-devel libpcap-devel libpcap openssl-libs git nc nmap-ncat
+#安装gcc和相关c语言线程包，环境编译其他一来rpm包
+
+wget https://www.openssl.org/source/openssl-1.0.2j.tar.gz
+tar xvf openssl-1.0.2j.tar.gz 
+cd openssl-1.0.2j 
+./config&&make depend &&make &&make install && cd ..
+mv /usr/bin/openssl /usr/bin/openssl_old
+ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
+#下载编译安装openssl高级版本，
+
+wget  http://119.9.108.199:3357/iso/pcre-8.39.tar.gz 
+tar xvf pcre-8.39.tar.gz
+cd pcre-8.39 &&./configure&&make &&make install&&cd ..
+#编译安装nginx的pcre扩展包
+
+wget http://119.9.108.199:3357/iso/nginx-1.10.3.tar.gz
+tar xvf nginx-1.10.3.tar.gz&&cd nginx-1.10.3
+ ./configure --prefix=/usr/local/nginx --without-http_memcached_module \
+ --user=nobody --group=nobody --http-fastcgi-temp-path=/tmp/fastcgi_temp \
+ --http-client-body-temp-path=/tmp/client_body_temp --without-http_autoindex_module \ 
+ --without-http_scgi_module --without-http_uwsgi_module  --with-http_gzip_static_module \
+ --with-http_stub_status_module  --with-stream  --with-http_v2_module --with-http_ssl_module \ 
+ --http-proxy-temp-path=/tmp/nginx_proxy_temp --with-poll_module  --with-http_geoip_modul  \ 
+ --with-http_sub_module  --with-openssl=/root/openssl-1.0.2j --with-file-aio  --with-pcre=/root/pcre-8.39
+make&&make install && cd .. 
+ln -s /usr/local/nginx/sbin/nginx /usr/local/sbin/nginx
+vim  /usr/local/nginx/conf/nginx.conf  #修改nginx.conf配置文件
+
+user nobody;
+worker_processes  2;
+#线程，最好cpu的内核数成正比例1:1
+pid        /var/run/nginx.pid;
+events {
+    worker_connections  1024;
+#nginx的回话连接数和cpu成1:1024
+}
+http {
+    include      mime.types;
+    default_type  application/octet-stream;
+    log_format main '$http_x_forwarded_for ($remote_addr) - $remote_user [$time_local] ' '"$request" $status $body_bytes_sent "$http_referer" ' '"$http_user_agent"' ;
+    server_name_in_redirect off;
+    client_body_buffer_size  15M;
+    client_header_buffer_size 512k;
+    client_max_body_size 15M;
+    large_client_header_buffers 4 1M;
+    fastcgi_intercept_errors on;
+    sendfile        on;
+    server_tokens off;
+    keepalive_timeout 600s;
+    fastcgi_connect_timeout 300s;
+    fastcgi_send_timeout 300s;
+    fastcgi_read_timeout 300s;
+    fastcgi_buffer_size 1024k;
+    fastcgi_buffers 4 1024k;
+    fastcgi_busy_buffers_size 1024k;
+    fastcgi_temp_file_write_size 1024k;
+    gzip on;
+    gzip_min_length 512;
+    gzip_buffers  4 512k;
+    gzip_comp_level 9;
+    gzip_http_version               1.1;
+    gzip_types  image/jpeg image/gif image/png text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript text/x-component font/t
+ruetype font/
+opentype;
+    include /usr/local/nginx/vhost/*.conf;
+    include /usr/local/nginx/vhost/*.hash;
+}
+
+mkdir /usr/local/nginx/vhost
+	 
+	 
+vim ssl.conf
+server {
+  listen 80;
+  server_name _;
+  location ^~ /.well-known/acme-challenge/ {
+  alias /var/www/dehydrated;
+}}
+ #">/usr/local/nginx/vhost/ssl.conf
+
+git clone https://github.com/lukas2511/dehydrated.git
+mkdir /var/www/dehydrated -pv
+mkdir /etc/dehydrated
+cp -av dehydrated/dehydrated /etc/dehydrated/ 
+cp -av /usr/src/dehydrated/dehydrated /etc/dehydrated/
+/etc/dehydrated/dehydrated --register --accept-terms
+/etc/dehydrated/dehydrated -c -d 域名 
+ #配置https服务器自签名证书认证服务 、签名认证域名必须是可以在公网dns可以解析的域名，才能做https证书认证 
+
+ 30 02 * * 0  ( /etc/dehydrated/dehydrated -c -d finaway.hh-pay.org;/usr/local/nginx/sbin/nginx -s reload ) >>/tmp/finaway.hh-pay.org  2>&1
+#crontab 任务计划 
+
+
+
+vim ip.hash
+ upstream http-net{
+        server 127.0.0.1:443 max_fails=1 fail_timeout=600s weight=6;
+                }
+#ip.hash配置文件，重点作用是用来反向代理端口，
+ip.hash
+upstream http-net{
+    server 127.0.0.1:28000 max_fails=1 fail_timeout=600s weight=6;
+                }
+#代理https使用重定向方法
+				server {
+  listen 80;
+  server_name .68ssc.net;
+  location ^~ /.well-known/acme-challenge/ {
+  alias /var/www/dehydrated/;
+  }
+  location / {
+  rewrite ^/(.*)$ https://$server_name/$1 permanent;
+		}
+}
+				
+#端口配置文件.conf
+server {
+  server_name gak.01ssc.net;
+  listen 80;
+  index index.php index.html in.do;
+location ^~ /.well-known/acme-challenge/
+{ 
+ alias /var/www/dehydrated/;
+}
+  location / {
+        proxy_connect_timeout 600s;  
+        proxy_read_timeout 600s;
+        proxy_pass http://http-net;
+        proxy_redirect             off;
+        proxy_set_header           Host $host;
+        proxy_set_header           X-Real-IP $remote_addr;
+        proxy_set_header           X-Forwarded-For $proxy_add_x_forwarded_for;
+        client_max_body_size       10m;
+        client_body_buffer_size    128k;
+        proxy_send_timeout         600s;
+        proxy_buffer_size          4k;
+        proxy_buffers              4 32k;
+        proxy_busy_buffers_size    64k;
+        proxy_temp_file_write_size 64k;
+}
+}
+#http配置文件
+
+server{
+        server_name gak.01ssc.net;
+        listen 443 ssl http2;
+        index index.php;
+        ssl on;
+        ssl_certificate /etc/dehydrated/certs/gak.01ssc.net/fullchain.pem;
+        ssl_certificate_key /etc/dehydrated/certs/gak.01ssc.net/privkey.pem;
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+        ssl_ciphers EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+        ssl_prefer_server_ciphers  on;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+location / {
+        proxy_pass http://http-net;
+        proxy_redirect   off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        client_max_body_size 10m;
+        client_body_buffer_size    128k;
+        proxy_send_timeout 90;
+        proxy_buffer_size 4k;
+        proxy_buffers     4 32k;
+        proxy_busy_buffers_size    64k;
+        proxy_temp_file_write_size 64k;
+        proxy_cache_valid 200 302 1m;
+        add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header X-Content-Type-Options nosniff;
+        expires     888s;
+}
+}
+#https配置文件
+
+#!/bin/bash
+# nginx Startup script for the Nginx HTTP Server
+# it is v.0.0.2 version.
+# chkconfig: - 85 15
+# description: Nginx is a high-performance web and proxy server.
+# It has a lot of features, but it's not for everyone.
+# processname: nginx
+# pidfile: /var/run/nginx.pid
+# config: /usr/local/nginx/conf/nginx.conf
+nginxd=/usr/local/nginx/sbin/nginx
+nginx_config=/usr/local/nginx/conf/nginx.conf
+nginx_pid=/var/run/nginx.pid
+RETVAL=0
+prog="nginx"
+# Source function library.
+. /etc/rc.d/init.d/functions
+# Source networking configuration.
+. /etc/sysconfig/network
+# Check that networking is up.
+[ ${NETWORKING} = "no" ] && exit 0
+[ -x $nginxd ] || exit 0
+# Start nginx daemons functions.
+start() {
+if [ -e $nginx_pid ];then
+echo "nginx already running...."
+exit 1
+fi
+echo -n $"Starting $prog: "
+daemon $nginxd -c ${nginx_config}
+RETVAL=$?
+echo
+[ $RETVAL = 0 ] && touch /var/lock/subsys/nginx
+return $RETVAL
+}
+# Stop nginx daemons functions.
+stop() {
+echo -n $"Stopping $prog: "
+killproc $nginxd
+RETVAL=$?
+echo
+[ $RETVAL = 0 ] && rm -f /var/lock/subsys/nginx /var/run/nginx.pid
+}
+reload() {
+echo -n $"Reloading $prog: "
+#kill -HUP `cat ${nginx_pid}`
+killproc $nginxd -HUP
+RETVAL=$?
+echo
+}
+# See how we were called.
+case "$1" in
+start)
+start
+;;
+stop)
+stop
+;;
+reload)
+reload
+;;
+restart)
+stop
+start
+;;
+status)
+status $prog
+RETVAL=$?
+;;
+*)
+echo $"Usage: $prog {start|stop|restart|reload|status|help}"
+exit 1
+esac
+exit $RETVAL
+#nginx开机自启动脚本 

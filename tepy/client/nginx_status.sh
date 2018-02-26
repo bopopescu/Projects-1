@@ -1,0 +1,41 @@
+#!/bin/bash
+# Script to fetch nginx statuses for tribily monitoring systems
+# Author: krish@tribily.com
+# License: GPLv2
+
+# Set Variables
+HOST=127.0.0.1
+PORT=80
+
+# Functions to return nginx stats
+
+function active {
+	curl -s "http://$HOST:$PORT/nginx_status" | grep 'Active' | awk '{print $NF}'
+}
+
+function reading {
+	curl -s "http://$HOST:$PORT/nginx_status" | grep 'Reading' | awk '{print $2}'
+}
+
+function writing {
+	curl -s "http://$HOST:$PORT/nginx_status" | grep 'Writing' | awk '{print $4}'
+}
+
+function waiting {
+	curl -s "http://$HOST:$PORT/nginx_status" | grep 'Waiting' | awk '{print $6}'
+}
+
+function accepts {
+	curl -s "http://$HOST:$PORT/nginx_status" | awk NR==3 | awk '{print $1}'
+}
+
+function handled {
+	curl -s "http://$HOST:$PORT/nginx_status" | awk NR==3 | awk '{print $2}'
+}
+
+function requests {
+	curl -s "http://$HOST:$PORT/nginx_status" | awk NR==3 | awk '{print $3}'
+}
+
+# Run the requested function
+$1

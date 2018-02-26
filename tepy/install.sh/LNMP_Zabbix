@@ -1,0 +1,552 @@
+安装lnmp环境 部署zabbix_server服务器端
+1 安装gcc及其他的依赖包
+yum install -y    vim  openssl openssl-devel epel-release make m4 \
+ autoconf bzip2 bzip2-devel gcc curl-devel libjpeg-devel libpng-devel  \
+ freetype-devel gmp-devel pcre-devel glib2-devel libxml2  libxml2-devel \
+ gcc-c++ wget gdb php-mcrypt cloud-init libmcrypt libmcrypt-devel psmisc \
+ cpp zlib-devel curl gd gd-devel mhash-devel  libevent-devel libmcrypt\
+ libtermcap-devel ncurses-devel GeoIP GeoIP-devel lua lua-devel \
+ libcurl libcurl-devel libpcap-devel libpcap openssl-libs git nc nmap-ncat \
+  OpenIPMI-devel libssh2-devel openldap-devel unixODBC-devel net-snmp-devel 
+
+ 卸载mysql包
+yum remove mysql* -yu
+
+
+
+
+
+2：下载lnmp、zabbix服务端tar.gz包
+wget http://tengine.taobao.org/download/tengine-2.2.0.tar.gz
+wget http://119.9.108.199:3357/iso/nginx/pcre-8.39.tar.gz 
+wget https://www.openssl.org/source/openssl-1.0.2l.tar.gz
+wget http://119.9.108.199:3357/iso/php-5.6.30.tar.gz
+wget http://www.cmake.org/files/v2.8/cmake-3.8.8.tar.gz
+wget https://cmake.org/files/v3.8/cmake-3.8.0.tar.gz
+wget http://119.9.108.199:3357/iso/mysql-5.7.10.tar.gz
+wget http://119.9.108.199:3357/iso/boost_1_59_0.tar.gz
+wget http://119.9.108.199:3357/iso/zabbix/zabbix-3.2.4.tar.gz
+
+3:安装tengine(Nginx)服务
+tar xvf pcre-8.39.tar.gz 
+tar xvf openssl-1.0.2j.tar.gz
+tar xvf tengine-2.2.0.tar.gz
+cd pcre-8.39
+./configure&&make&&make install
+cd ..
+cd openssl-1.0.2j
+./config
+ make depend 
+ make -j &&make install 
+ cd ..
+mv /usr/bin/openssl /usr/bin/openssl_old
+ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
+
+cd tengine-2.2.0
+./configure --prefix=/usr/local/nginx \
+--http-fastcgi-temp-path=/tmp/fastcgi_temp \
+--http-proxy-temp-path=/tmp/nginx_proxy_temp \
+--http-client-body-temp-path=/tmp/client_body_temp \
+--with-poll_module \
+--with-file-aio  \
+--with-http_gzip_static_module \
+--with-http_sysguard_module \
+--with-mail_ssl_module \
+--with-zlib-asm=CPU \
+--with-http_upstream_ip_hash_module=shared \
+--with-http_sub_module \
+--with-http_addition_module \
+--with-http_gunzip_module \
+--with-md5-asm \
+--with-pcre=/root/pcre-8.39 \
+--with-openssl=/root/openssl-1.0.2j
+make &&make install  &&cd ..
+
+
+user nobody;
+worker_processes  2;
+pid        /var/run/nginx.pid;
+events {
+    worker_connections  1024;
+}
+http {
+    include      mime.types;
+    default_type  application/octet-stream;
+    log_format main '$http_x_forwarded_for ($remote_addr) - $remote_user [$time_local] ' '"$request" $status $body_bytes_sent "$http_referer" ' '"$http_user_agent"' ;
+    server_name_in_redirect off;
+    client_body_buffer_size  15M;
+    client_header_buffer_size 512k;
+    client_max_body_size 15M;
+    large_client_header_buffers 4 1M;
+    fastcgi_intercept_errors on;
+    sendfile        on;
+    server_tokens off;
+    keepalive_timeout 600s;
+    fastcgi_connect_timeout 300s;
+    fastcgi_send_timeout 300s;
+    fastcgi_read_timeout 300s;
+    fastcgi_buffer_size 1024k;
+    fastcgi_buffers 4 1024k;
+    fastcgi_busy_buffers_size 1024k;
+    fastcgi_temp_file_write_size 1024k;
+    gzip on;
+    gzip_min_length 512;
+    gzip_buffers  4 512k;
+    gzip_comp_level 9;
+    gzip_http_version               1.1;
+    gzip_types  image/jpeg image/gif image/png text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript text/x-component font/t
+ruetype font/
+opentype;
+    include vhost/*.conf;
+    include vhost/*.hash;
+}
+
+
+server {
+  listen 80;
+  server_name jk.zhqsg.cn;
+  location ^~ /.well-known/acme-challenge/ {
+  alias /var/www/dehydrated/;
+}}
+
+
+server {
+  server_name jk.zhqsg.cn;
+  listen 80;
+  index index.php ;
+ location ^~ /.well-known/acme-challenge/ {
+  alias /var/www/dehydrated/;
+
+}
+location / {  
+ rewrite ^/(.*)$ https://$server_name/$1 permanent; }
+}
+server{
+        server_name jk.zhqsg.cn;
+       # server_name 127.0.0.1;
+        listen 443 ssl http2;
+        index index.php;
+        ssl on;
+        ssl_certificate /etc/dehydrated/certs/jk.zhqsg.cn/fullchain.pem;
+        ssl_certificate_key /etc/dehydrated/certs/jk.zhqsg.cn/privkey.pem;
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+        ssl_ciphers EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+        ssl_prefer_server_ciphers  on;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+location / {
+        root  /var/www/html;
+          auth_basic "secrte";
+        auth_basic_user_file /opt/server/nginx/conf/vhost/password.db;
+    }
+location ~ \.php$ {
+        fastcgi_pass  127.0.0.1:9000;
+        fastcgi_index   index.php;
+        fastcgi_read_timeout 900s;
+        fastcgi_param  SCRIPT_FILENAME  /var/www/html$fastcgi_script_name;
+        include        fastcgi_params;
+                                }
+}
+
+
+
+
+
+location / {
+        proxy_pass http://gak-01ssc-net;
+        proxy_redirect   off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        client_max_body_size 10m;
+        client_body_buffer_size    128k;
+        proxy_send_timeout 90;
+        proxy_buffer_size 4k;
+        proxy_buffers     4 32k;
+        proxy_busy_buffers_size    64k;
+        proxy_temp_file_write_size 64k;
+        proxy_cache_valid 200 302 1m;
+        add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header X-Content-Type-Options nosniff;
+        expires     888s;
+}
+
+
+
+
+
+
+
+4:安装PHP5.6版本
+tar xvf php-5.6.30.tar.gz
+cd php-5.6.30
+./configure --prefix=/usr/local/php \
+--with-config-file-path=/usr/local/php/etc \
+--with-mysqli \
+--with-gd \
+--with-iconv \
+--with-zlib \
+--enable-xml \
+--enable-bcmath \
+--enable-shmop \
+--enable-sysvsem \
+--enable-inline-optimization \
+--enable-mbregex --enable-fpm \
+--enable-mbstring \
+--enable-ftp \
+--enable-gd-native-ttf \
+--with-openssl \
+--enable-pcntl \
+--enable-sockets \
+--with-xmlrpc \
+--enable-zip \
+--enable-soap \
+--without-pear \
+--with-gettext \
+--enable-session \
+--with-mcrypt \
+--with-curl \
+--with-freetype-dir \
+--with-jpeg-dir
+
+php.ini配置文件
+[PHP]
+engine = On
+short_open_tag = Off
+asp_tags = Off
+precision = 14
+output_buffering = 4096
+zlib.output_compression = Off
+implicit_flush = Off
+unserialize_callback_func =
+serialize_precision = 17
+disable_functions =
+disable_classes =
+zend.enable_gc = On
+expose_php = On
+max_execution_time = 300
+max_input_time = 300
+memory_limit = 128M
+error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
+display_errors = Off
+display_startup_errors = Off
+log_errors = On
+log_errors_max_len = 1024
+ignore_repeated_errors = Off
+ignore_repeated_source = Off
+report_memleaks = On
+track_errors = Off
+html_errors = On
+variables_order = "GPCS"
+request_order = "GP"
+register_argc_argv = Off
+auto_globals_jit = On
+post_max_size = 16M
+auto_prepend_file =
+auto_append_file =
+default_mimetype = "text/html"
+default_charset = "UTF-8"
+always_populate_raw_post_data = -1
+doc_root =
+user_dir =
+enable_dl = Off
+file_uploads = On
+upload_max_filesize = 2M
+max_file_uploads = 20
+allow_url_fopen = On
+allow_url_include = Off
+default_socket_timeout = 60
+[CLI Server]
+cli_server.color = On
+[Date]
+date.timezone = UTC
+[filter]
+[iconv]
+[intl]
+[sqlite3]
+[Pcre]
+[Pdo]
+[Pdo_mysql]
+pdo_mysql.cache_size = 2000
+pdo_mysql.default_socket=
+[Phar]
+[mail function]
+SMTP = localhost
+smtp_port = 25
+mail.add_x_header = On
+[SQL]
+sql.safe_mode = Off
+[ODBC]
+odbc.allow_persistent = On
+odbc.check_persistent = On
+odbc.max_persistent = -1
+odbc.max_links = -1
+odbc.defaultlrl = 4096
+odbc.defaultbinmode = 1
+[Interbase]
+ibase.allow_persistent = 1
+ibase.max_persistent = -1
+ibase.max_links = -1
+ibase.timestampformat = "%Y-%m-%d %H:%M:%S"
+ibase.dateformat = "%Y-%m-%d"
+ibase.timeformat = "%H:%M:%S"
+[MySQL]
+mysql.allow_local_infile = On
+mysql.allow_persistent = On
+mysql.cache_size = 2000
+mysql.max_persistent = -1
+mysql.max_links = -1
+mysql.default_port =
+mysql.default_socket =
+mysql.default_host =
+mysql.default_user =
+mysql.default_password =
+mysql.connect_timeout = 60
+mysql.trace_mode = Off
+[MySQLi]
+mysqli.max_persistent = -1
+mysqli.allow_persistent = On
+mysqli.max_links = -1
+mysqli.cache_size = 2000
+mysqli.default_port = 3306
+mysqli.default_socket =
+mysqli.default_host =
+mysqli.default_user =
+mysqli.default_pw =
+mysqli.reconnect = Off
+[mysqlnd]
+mysqlnd.collect_statistics = On
+mysqlnd.collect_memory_statistics = Off
+[OCI8]
+[PostgreSQL]
+pgsql.allow_persistent = On
+pgsql.auto_reset_persistent = Off
+pgsql.max_persistent = -1
+pgsql.max_links = -1
+pgsql.ignore_notice = 0
+pgsql.log_notice = 0
+[Sybase-CT]
+sybct.allow_persistent = On
+sybct.max_persistent = -1
+sybct.max_links = -1
+sybct.min_server_severity = 10
+sybct.min_client_severity = 10
+[bcmath]
+bcmath.scale = 0
+[browscap]
+[Session]
+session.save_handler = files
+session.use_strict_mode = 0
+session.use_cookies = 1
+session.use_only_cookies = 1
+session.name = PHPSESSID
+session.auto_start = 0
+session.cookie_lifetime = 0
+session.cookie_path = /
+session.cookie_domain =
+session.cookie_httponly =
+session.serialize_handler = php
+session.gc_probability = 1
+session.gc_divisor = 1000
+session.gc_maxlifetime = 1440
+session.referer_check =
+session.cache_limiter = nocache
+session.cache_expire = 180
+session.use_trans_sid = 0
+session.hash_function = 0
+session.hash_bits_per_character = 5
+url_rewriter.tags = "a=href,area=href,frame=src,input=src,form=fakeentry"
+[MSSQL]
+mssql.allow_persistent = On
+mssql.max_persistent = -1
+mssql.max_links = -1
+mssql.min_error_severity = 10
+mssql.min_message_severity = 10
+mssql.compatibility_mode = Off
+mssql.secure_connection = Off
+[Assertion]
+[COM]
+[mbstring]
+[gd]
+[exif]
+[Tidy]
+tidy.clean_output = Off
+[soap]
+soap.wsdl_cache_enabled=1
+soap.wsdl_cache_dir="/tmp"
+soap.wsdl_cache_ttl=86400
+soap.wsdl_cache_limit = 5
+[sysvshm]
+[ldap]
+ldap.max_links = -1
+[mcrypt]
+[dba]
+[opcache]
+[curl]
+[openssl]
+
+php-fpm.conf配置文件
+[global]
+rlimit_files = 51200
+[www]
+user = nobody
+group = nobody
+listen = 127.0.0.1:9000
+;pm = dynamic
+pm = static
+pm.max_children = 350
+pm.start_servers = 30
+pm.min_spare_servers = 30
+pm.max_spare_servers = 90
+security.limit_extensions = .php .do
+;request_terminate_timeout = 600
+request_terminate_timeout = 0
+;pm.max_requests = 50000
+pm.status_path = /status
+
+tar xvf mysql-5.7.10.tar.gz
+tar xvf boost_1_59_0.tar.gz
+tar xvf cmake-3.8.0.tar.gz
+
+cd cmake-3.8.0
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mysql \
+-DSYSCONFDIR=/etc -DDEFAULT_CHARSET=utf8 \
+-DDEFAULT_COLLATION=utf8_general_ci \
+-DDEFAULT_CHARSET=utf8mb4 \
+-DDEFAULT_COLLATION=utf8mb4_general_ci \
+-DEXTRA_CHARSETS=all \
+-DWITH_INNOBASE_STORAGE_ENGINE=1 \
+-DWITH_ARCHIVE_STORAGE_ENGINE=1 \
+-DWITH_MYISAM_STORAGE_ENGINE=1 \
+-DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
+-DWITH_FEDERATED_STORAGE_ENGINE=1 \
+-DWITH_PARTITION_STORAGE_ENGINE=1 \
+-DENABLE_DTRACE=0 \
+-DMYSQL_TCP_PORT=3306 \
+-DENABLE_DOWNLOADS=1 \
+-DENABLED_LOCAL_INFILE=1 \
+-DWITH_EMBEDDED_SERVER=1
+
+
+ -DWITH_BOOST=/root/boost_1_59_0
+
+ /usr/local/mysql/bin/mysqld --initialize --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
+./mysqld --initialize-insecure  --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/data   #无密码 
+ 
+ SET PASSWORD = PASSWORD('123456'); 
+ mysql数据库my.cnf配置文件
+[mysqld]
+basedir = /usr/local/mysql
+datadir = /usr/local/mysql/data
+pid-file = /tmp/mysql.pid
+socket  = /tmp/mysql.sock
+explicit_defaults_for_timestamp=true
+character-set-server = utf8
+collation-server = utf8_general_ci
+log_error =/var/log/mysql/error.log
+user = mysql
+port = 3306
+default_storage_engine = InnoDB
+innodb_file_per_table = 1
+server_id = 13
+binlog_format = mixed
+bind-address = 0.0.0.0
+skip-name-resolve
+skip-host-cache
+ft_min_word_len = 1
+query_cache_size = 64M
+query_cache_type = 1
+skip-external-locking
+key_buffer_size = 16M
+max_allowed_packet = 1M
+table_open_cache = 64
+sort_buffer_size = 512K
+net_buffer_length = 8K
+read_buffer_size = 256K
+read_rnd_buffer_size = 512K
+myisam_sort_buffer_size = 8M
+innodb_log_file_size=512M
+innodb_log_files_in_group=3
+innodb_log_buffer_size=4M
+innodb_flush_log_at_trx_commit=2
+innodb_lock_wait_timeout=20
+innodb_file_per_table=1
+innodb_open_files=20000
+innodb_buffer_pool_size=1G
+innodb_thread_concurrency=4
+innodb_fast_shutdown =0
+innodb_force_recovery=0
+innodb_max_dirty_pages_pct =75
+innodb_autoinc_lock_mode =1
+innodb_data_file_path = ibdata1:500M;ibdata2:2210M:autoextend
+group_concat_max_len=10240000
+log_bin_trust_function_creators=1
+open_files_limit = 65535
+log-bin = mysql-bin
+[mysqldump]
+quick
+max_allowed_packet = 64M
+[myisamchk]
+key_buffer_size = 2M
+sort_buffer_size = 1M
+read_buffer = 1M
+write_buffer = 1M
+[client]
+port = 3306
+
+
+
+
+./bootstrap.sh
+./bjam --prefix=/usr/local
+./b2 install
+
+
+./configure --prefix=/usr/local/zabbix_server \
+--enable-server \
+--enable-agent \
+--with-mysql=/usr/local/mysql/bin/mysql_config  \
+--with-net-snmp \
+--with-libcurl \
+--with-libxml2 \
+--with-openssl  \
+--with-ssh2  \
+--with-openipmi \
+--with-ldap \
+--enable-proxy
+tar xvf zabbix-3.2.4.tar.gz 
+
+
+
+环境变量配置文件
+vi /etc/profile.d/lnmp.sh
+#!/bin/bash
+export MYSQL_BASE=/usr/local/mysql
+export NGINX_BASE=/usr/local/nginx
+export PHP_BASE=/usr/local/php
+export PATH=$PATH:$MYSQL_BASE/bin:$PHP_BASE/sbin:$NGINX_BASE/sbin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

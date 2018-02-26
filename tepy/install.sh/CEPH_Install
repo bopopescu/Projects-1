@@ -1,0 +1,111 @@
+ceph部署步骤
+[Ceph]
+name=Ceph packages for $basearch
+baseurl=http://download.ceph.com/rpm-jewel/el7/$basearch
+enabled=1
+gpgcheck=1
+type=rpm-md
+gpgkey=https://download.ceph.com/keys/release.asc
+
+[Ceph-noarch]
+name=Ceph noarch packages
+baseurl=http://download.ceph.com/rpm-jewel/el7/noarch
+enabled=1
+gpgcheck=1
+type=rpm-md
+gpgkey=https://download.ceph.com/keys/release.asc
+
+[ceph-source]
+name=Ceph source packages
+baseurl=http://download.ceph.com/rpm-jewel/el7/SRPMS
+enabled=1
+gpgcheck=1
+type=rpm-md
+gpgkey=https://download.ceph.com/keys/release.asc
+
+
+192.168.192.190 master
+192.168.192.217 node-01
+192.168.192.231 node-02
+sed -i 's/0/1/g' /etc/yum.conf 
+
+passwd ceph  
+echo "ceph ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ceph
+ sudo  chmod 0440 /etc/sudoers.d/ceph  
+ 
+ssh-keygen  -t rsa -I 1024
+Host master
+   Hostname 192.168.192.190
+   User ceph
+   Port 22
+Host node-01
+        Hostname 192.168.192.217
+        User ceph
+        Port 22
+Host node-02
+        Hostname 192.168.192.231
+        User ceph
+        Port 22
+	
+ceph-deploy --overwrite-conf mon create  
+ 
+ceph-deploy new master node-01 node-02 --cluster-network=192.168.192.0/24 --public-network=192.168.192.0/24
+ceph-deploy install  master node-{01,02}
+
+ ceph-deploy --username ceph mon create-initial
+ 
+ mon_initial_members = master, node-01, node-02
+mon_osd_nearfull_ratio = 0.85
+mon_osd_full_ratio = 0.95
+filestore_xattr_use_omap = true
+public_network = 192.168.192.0/24
+cluster_network = 192.168.192.0/24
+mon_host = 192.168.192.190,192.168.192.217,192.168.192.231
+auth_cluster_required = cephx
+auth_service_required = cephx
+auth_client_required = cephx
+auth_supported = cephx
+osd_pool_default_size = 3
+osd_pool_default_pg_num = 128
+osd_pool_default_pgp_num = 128
+rgw_cache_enabled = True
+rgw_cache_lru_size = 100000
+rgw_thread_pool_size = 600
+rgw_num_rados_handles = 8
+rgw_override_bucket_index_max_shards = 64
+rgw_max_chunk_size = 4194304
+rgw_enable_usage_log = True
+rgw_enable_ops_log = True
+rgw_user_quota_sync_interval = 600
+rgw_user_quota_sync_wait_time = 600
+rgw_gc_obj_min_wait = 2400
+rgw_gc_processor_max_time = 1800
+rgw_gc_processor_period = 1800
+
+[osd]
+osd_journal_size = 10240
+osd_client_message_size_cap = 1073741824
+osd_client_message_cap = 200
+osd_op_threads = 4
+osd_op_thread_timeout = 60
+journal_max_write_entries = 1000
+journal_max_write_bytes = 1073741824
+filestore_op_threads = 4
+filestore_queue_max_ops = 1000
+filestore_queue_max_bytes = 1073741824
+
+[mon]
+mon_osd_down_out_interval = 3600
+mon_clock_drift_allowed = 0.15
+
+[client.rgw.node-02]
+rgw_frontends = civetweb port=80
+host = node-02
+
+[client.rgw.node-01]
+rgw_frontends = civetweb port=80
+host = node-01
+
+#[client.ceph-rest-api.master]
+#keyring = /etc/ceph/client.ceph-rest-api.master.keyring
+#public_addr = 0.0.0.0:6066

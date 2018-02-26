@@ -1,0 +1,32 @@
+#!/usr/bin/python
+#_*_ coding: utf-8 _*_
+s1 = "路 飞"
+print(s1)
+s2 = s1.encode('utf-8')
+print(s2)
+s3 = s2.decode('utf-8')
+print(s3)
+s4 = s3.encode('utf-8')
+s5 = s1.encode('gbk')
+print(s5)
+
+
+
+s2 = b"sdf" 定义bytes格式
+
+
+py2
+    str = bytes
+     因为 要表示 图片，视频 等二进制格式 的数据
+
+     以 utf8编码的字符串，在windows上不能显示
+   如何在python2 实现 写一个软件 在全球各国电脑上 直接 看？
+     以unicode 编写你的软件
+
+     s = you_str.dencode('utf8')
+
+
+    py2 以utf8 or gbk。的编码的代码 加载代码内容到内存，并不会被转成unicode   编码依然是utf8 或者 gbk
+    py3 以utf8 or gbk。的编码的代码 加载代码内容到内存，会自动转成unicode
+
+py3

@@ -1,0 +1,48 @@
+浮点数是属于有理数中某特定子集的数的数字表示，在计算中用以近似表示任意某个实数，
+具体说，这个实数由一个整数或者定点数(即尾数)乘以某个基数的整数次幂的到(10**4、10位基数)，
+这种表示方法类似于基数为10的科学计数法。
+
+科学计数法
+>>> 1399
+1399
+>>> 1.399e3
+1399.0
+>>> 0.1399e4
+1399.0
+
+借助decimal模块的"getcontext"和"Decimal" 方法
+>>> a = 3.141592653589793238462643383279
+>>> a
+3.141592653589793
+>>> from decimal import *
+>>> getcontext()
+Context(prec=50, rounding=ROUND_HALF_EVEN, Emin=-999999, Emax=999999, capitals=1, clamp=0, flags=[], traps=[InvalidOperation, DivisionByZero, Overflow])
+>>> getcontext().prec = 50
+>>> a = Decimal(1)/Decimal(3) #注  在分数计算结果正确，
+>>> a
+Decimal('0.33333333333333333333333333333333333333333333333333')
+>>> Decimal(a)
+Decimal('0.33333333333333333333333333333333333333333333333333')
+
+
+这里有一个问题，就是当我们的计算需要使用更高的精度（超过16位小数）的时候该怎么做呢？
+
+#借助decimal模块的“getcontext“和“Decimal“ 方法
+>>> a = 3.141592653513651054608317828332
+>>> a
+3.141592653513651
+>>> from decimal import *
+>>> getcontext()
+Context(prec=50, rounding=ROUND_HALF_EVEN, Emin=-999999, Emax=999999, capitals=1, clamp=0, flags=[FloatOperation], traps=[InvalidOperation, DivisionByZero, Overflow])
+>>> getcontext().prec = 50
+>>> a = Decimal(1)／Decimal(3)#注，在分数计算中结果正确，如果直接定义超长精度小数会不准确
+>>> a
+Decimal('0.33333333333333333333333333333333333333333333333333')
+
+>>> a = '3.141592653513651054608317828332'
+>>> Decimal(a)
+Decimal('3.141592653513651054608317828332')
+#不推荐：字符串格式化方式，可以显示，但是计算和直接定义都不准确，后面的数字没有意义。
+>>> a = ("%.30f" % (1.0/3))
+>>> a
+'0.333333333333333314829616256247'

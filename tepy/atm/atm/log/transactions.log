@@ -1,0 +1,2 @@
+2017-09-13 20:16:32,673 - transaction - INFO - account:1234   action:repay    amount:1500.0   interest:0.0
+2017-09-13 20:16:36,753 - transaction - INFO - account:1234   action:repay    amount:1.0   interest:0.0

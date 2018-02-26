@@ -1,0 +1,22 @@
+如果在循环的过程中，因为某些原因，你不想继续循环了，怎么把它中止掉呢？这就用到break 或 continue 语句
+
+break用于完全结束一个循环，跳出循环体执行循环后面的语句
+continue和break有点类似，区别在于continue只是终止本次循环，接着还执行后面的循环，break则完全终止循环
+
+例子:break
+count = 0
+while count <= 100 : #只要count<=100就不断执行下面的代码
+    print("loop ", count)
+    if count == 5:
+        break
+    count +=1 #每执行一次，就把count+1，要不然就变成死循环啦，因为count一直是0
+
+print("-----out of while loop ------")
+
+count  = 0
+while count <= 100:
+    print( 'loop ',count)
+    if count == 5:
+         break
+    count += 1
+print( "*******out of  the loop count **********")

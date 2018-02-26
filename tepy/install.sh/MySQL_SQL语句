@@ -1,0 +1,7 @@
+ TRUNCATE TABLE 表名 清除数据
+ 
+
+数据库
+登录ip   zhdbs-cluster.cluster-cdc5ggu7i40t.ap-northeast-1.rds.amazonaws.com
+用户名   dbsusers
+登录密码 dbSuserS$

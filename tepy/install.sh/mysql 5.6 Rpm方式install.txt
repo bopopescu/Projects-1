@@ -1,0 +1,37 @@
+mysql 5.6 Rpm包简单--安装步骤
+
+下载包文件
+
+wget https://downloads.mariadb.com/files/mysql-5.6/MySQL-5.6.17-1.el6.x86_64.rpm-bundle.tar
+tar xvf MySQL-5.6.17-1.el6.x86_64.rpm-bundle.tar
+
+
+安装之前需----删除系统自带Mysql包文件；
+
+[root@mha-m ~]# rpm -qa | grep mysql
+mysql-libs-5.1.66-2.el6_3.x86_64
+
+[root@mha-m ~]# yum -y remove mysql-libs-5.1.66*
+
+安装MySQL包：(yum -y install libaio)
+
+rpm -ivh MySQL-client-5.6.17-1.el6.x86_64.rpm
+rpm -ivh MySQL-server-5.6.17-1.el6.x86_64.rpm
+rpm -ivh MySQL-shared-compat-5.6.17-1.el6.x86_64.rpm
+
+
+拷贝配置启动文件路径到etc目录内；
+cp /usr/share/mysql/my-default.cnf  /etc/my.cnf
+
+安装完成以后默认保存的随机密码位置
+A random root password has been set. You will find it in '/root/.mysql_secret'.
+
+修改密码方案(随机密码oRIHwN6oFInBz20I)
+
+/usr/bin/mysqladmin -u root -p'oRIHwN6oFInBz20I'  password 'root'
+
+修改my.cnf配置文件的相关参数后并重启数据库
+
+service mysql  restart
+
+

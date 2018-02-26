@@ -1,0 +1,38 @@
+函数参数
+形参变量
+ 只有在被调用时才分配内存单元，在调用结束时，即可释放所分配的内存单元，因此，形参只在内部有效，函数调用结束返回主调用函数后则不能在使用形参变量
+实参
+ 可以常场量，变量，表达式，函数等，无论实参时任何类型的量，在进行函数调用时，他们都必须有确定值，一边把这些值传给形参，因此应预先用赋值，输入等办法是参数获取得确定值
+
+def  calc(x,y):  形参
+    res = x**y
+    return res
+
+c = calc(a,b)  实参
+print(c)
+
+
+发现 country 这个参数 基本都是"CN"
+def  stu_register(name,age,country,soures):
+    print('----注册学生信息-----')
+    print('姓名:'，name)
+    print('age:',age)
+    print('国籍:',country)
+    print('课程：'，coures)
+
+stu_register('王山炮','22','CN',ptyhone_devopt')
+stu_register('张三','21','CN','linux)
+stu_register('李四','21','CN','linux)
+
+def tu_register(name,age,soures,country="CN")
+
+
+正常情况下，给函数传参数要按照书序，不想安顺序就可以用关联参数，只需要指定参数名即可（指定了参数名就叫关键参数），但记住一个要求就是，关键参数必须放在位置参数（以为值顺序确定对应关系的参数）之后
+stu_register('李四',,coures='PY',age=22,country='JP')
+这样不可以使用
+stu_register('李四','21',coures='PY'，22,country='JP')
+当然这样也不可以使用
+stu_register('李四',age=22,25,country='JP')
+
+
+

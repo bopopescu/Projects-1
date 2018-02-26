@@ -1,0 +1,2 @@
+#linux ddos  检测命令 ddos攻击
+netstat -ntu |awk {'print $5'}|cut -d: -f1|sort|uniq -c |sort -n

@@ -1,0 +1,85 @@
+git config --global user.name  //global 使用全局配置文件 
+git config --global user.email  
+git config --local            //  --local使用存储库配置文件
+ git init 初始化新的仓库  
+ git --bare 
+ git clone git/ git
+ 
+ git add 
+ git commit  -m “initial commit“ 提交到历史记录里面去了
+ git add 文件目录
+ git reset  HEAD  a //还原被删除数据
+ git rm --cached a //从占全区删除文件
+ git add  -A 是吧整个目录添加到工作目录
+ vim 
+ *.[oa]
+ *~ 
+ !test.pyt   
+
+
+添加将文件内容添加到索引
+   bisect通过二进制搜索找到引入错误的更改
+   分支列表，创建或删除分支
+   checkout检出工作树的一个或多个分支
+   clone将存储库克隆到新目录中
+   commit将更改记录到存储库
+   diff显示提交，提交和工作树之间的更改等
+   fetch从另一个存储库下载对象和引用
+   grep打印与模式匹配的线条
+   init创建一个空的Git存储库或重新初始化现有的Git存储库
+   log显示提交日志
+   merge将两个或多个开发历史加入在一起
+   mv移动或重命名文件，目录或符号链接
+   pull从另一个存储库或本地分支中提取和合并
+   push更新远程引用以及关联对象
+   rebase转发端口本地提交到更新的上游头
+   reset将当前HEAD复位到指定状态
+   rm从工作树和索引中删除文件
+   show显示各种类型的对象
+   status显示工作树状态
+   标记创建，列出，删除或验证使用GPG签名的标记对象
+ 
+ 
+ 
+ 
+
+ 
+ git status   
+ git rm  删除
+ git mv 移动或者重名了
+ 
+ gitgnore 
+ 
+--global使用全局配置文件
+    --system使用系统配置文件
+    --local使用存储库配置文件
+    -f，--file <file>使用给定的配置文件
+    --blob <blob-id>从给定的blob对象读取配置
+
+行动
+    --get get value：name [value-regex]
+    --get-all获取所有值：key [value-regex]
+    --get-regexp获取regexp的值：name-regex [value-regex]
+    --get-urlmatch获取特定于URL的值：section [.var] URL
+    --replace-all替换所有匹配的变量：name value [value_regex]
+    --add添加一个新变量：name value
+    --unset删除一个变量：name [value-regex]
+    --unset-all删除所有匹配项：name [value-regex]
+    --rename-section rename section：old-name new-name
+    --remove-section删除节：名称
+    -l， - list list all
+    -e，--edit打开编辑器
+    --get-color查找配置的颜色：slot [default]
+    --get-colorbool找到颜色设置：slot [stdout-is-tty]
+
+类型
+    --bool值为“true”或“false”
+    --int value是十进制数
+    --bo-or-int值是-bool或者-int
+    --path值是一个路径（文件或目录名）
+
+其他
+    -z，--null终止带有NUL字节的值
+    --name-only只显示变量名
+    --includes respect包括查找的指令
+    --show-origin显示config的起源（文件，标准输入，blob，命令行）

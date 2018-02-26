@@ -1,0 +1,22 @@
+Nginx安装
+ yum install wget gdb  php-mcrypt libmcrypt   libmcrypt-devel  gcc-c++  pcre pcre-devel  curl-devel  libmcrypt-devel mysql-devel libxml2  libxml2-devel gd gd-devel  mhash-devel zlib-devel   libmcrypt-devel bzip2 bzip2-devel  autoconf libevent libevent-devel  ntpdate  libjpeg libjpeg-devel libtermcap-devel ncurses  ncurses-devel GeoIP GeoIP-devel  libcurl libcurl-devel libpcap-devel libpcap openssl openssl-devel
+ 
+ 
+ wget http://119.9.108.199:3357/iso/NGINX/nginx-1.10.3.tar.gz 
+ 
+ configure --prefix=/usr/local/nginx --without-http_memcached_module --user=nobody --group=nobody  --http-fastcgi-temp-path=/tmp/fastcgi_temp  --http-client-body-temp-path=/tmp/client_body_temp  --without-http_autoindex_module --without-http_scgi_module   --without-http_uwsgi_module  --with-http_gzip_static_module --with-http_stub_status_module --with-pcre=/root/pcre-8.39 --http-proxy-temp-path=/tmp/nginx_proxy_temp    --with-openssl=/usr/
+ 
+ wget http://119.9.108.199:3357/iso/NGINX/pcre-8.39.tar.gz
+ wget http://119.9.108.199:3357/iso/NGINX/nginx-1.10.3.tar.gz
+ http://119.9.108.199:3357/iso/Radis/redis-3.2.8.tar.gz
+ http://119.9.108.199:3357/iso/PHP/php-5.6.20.tar.gz
+ 
+ 
+ ./configure &&make && make install  &&cd .. &&cd nginx-1.10.3 && ./configure --prefix=/usr/local/nginx --without-http_memcached_module --user=nobody --group=nobody  --http-fastcgi-temp-path=/tmp/fastcgi_temp  --http-client-body-temp-path=/tmp/client_body_temp  --without-http_autoindex_module --without-http_scgi_module   --without-http_uwsgi_module  --with-http_gzip_static_module --with-http_stub_status_module --with-pcre=/root/pcre-8.39 --http-proxy-temp-path=/tmp/nginx_proxy_temp    --with-openssl=/usr/&&make &&make install && cd  .. &&rm -rf pcre-8* &&rm -rf nginx-1.10*
+ 
+ 
+  make &&make install &&./utils/install_server.sh&&cd .. &&rm -rf redis-3*
+  
+  
+  
+  

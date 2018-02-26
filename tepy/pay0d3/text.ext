@@ -1,0 +1,21 @@
+hello 1
+hello 1
+hello 2
+hello 3
+>>> f = open("text.ext" ,"w")
+>>> f.write ("hello 1\n")
+8
+>>> f.flush()
+>>> f.write ("hello 1\n")
+8
+>>> f.write ("hello 2\n")
+8
+>>> f.write ("hello 3\n")
+8
+>>> f.flush()
+>>>
+>>> import sys
+>>> sys.stdout.write("#")
+#1
+>>> sys.stdout.write("#####")
+#####5

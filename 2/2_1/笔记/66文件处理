@@ -1,0 +1,23 @@
+文件操作分为读 、写、修改
+f = open(file= 'l.txt',mode='r',encoding='utf-8)  打开一个文件
+f = open(file='l.txt',mode='rb')   在不到文件的编码格式 使用rb的方式打开 或者是二进制文件 互联网数据库传输
+data = f.read()  读取里面的内容
+f.close() 关闭文件
+
+Import  chardet     导入工具
+f=open(file='l.txt',mode='rb')   读取源文件
+data=f.read()
+print(data)
+print(chardet.detect(data)) 字符编码匹配 查找对应字符编码
+print(data.decode('utf8'))  进行对字符串进行解码 还原数据
+f.close()
+
+f = open(file='l.txt',mode='r',encoding='utf8')  有换行
+for  line in f:
+    print(line)
+
+f.close()
+
+f = open(file='1.txt',mode='wb')  二进制写文件
+f.write('留级吋'.encode('gbk'))
+f.close()

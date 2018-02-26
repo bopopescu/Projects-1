@@ -1,0 +1,66 @@
+流程控制
+假如把写程序比做走路，那我们到现在为止，一直走的都是直路，还没遇到过分叉口，想象现实中，你遇到了分叉口，然后你决定往哪拐必然是有所动机的。你要判断那条岔路是你真正要走的路，
+如果我们想让程序也能处理这样的判断怎么办？ 很简单，只需要在程序里预设一些条件判断语句，满足哪个条件，就走哪条岔路。这个过程就叫流程控制。
+
+if...else 语句
+
+单分支
+Ageoldboy = 56
+if Ageoldboy > 50 :
+    print("Time to find a bf.")
+
+print("**********hahaha")
+
+双分支
+_username = "kevin"
+_password = '123456'
+
+username = input("username: ")
+password = input("password: ")
+
+if username == _username and password == _password :
+    print("welcome" , _username)
+else:
+    print("wrong username or password")
+
+name = input("name： ")
+sex = input("sex: ")
+age = int(input("age: "))
+#if ex  == 'f':
+#1如果 是女生
+ # 1.1 如果年龄 小于28
+ #   1.1.1 打印喜欢女生
+ # 1.2 打印姐弟恋
+ #   2 如果是男生 打印搞基
+if sex == "f":
+    if age <28 :
+         print("I love girls")
+    else :
+        print("姐弟恋很好")
+else:
+    print ("一起来搞基")
+
+多分支
+age = 26
+user_guess = int(input("your guess :"))
+if user_guess == age:
+    print("恭喜你答对了，中大奖")
+elif user_guess < age:
+    print("try bigger")
+else:
+    print("try smbting")
+
+
+fraction = int(input("fraction :"))
+if fraction > 100:
+    print("满分 优秀 ")
+elif fraction >90:
+     print("优加 ")
+elif fraction > 80:
+    print("优秀")
+elif fraction >70:
+    print("优良")
+elif fraction >60:
+    print("良")
+else:
+    print("差劲 ")

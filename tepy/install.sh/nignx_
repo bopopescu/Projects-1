@@ -1,0 +1,14 @@
+﻿#!/bin/bash
+PID_nginx=$(ps -ef |grep nginx |grep master |awk {'print $2'})
+curl http://127.0.0.1&>/dev/null
+if [ $? -eq 0 ];then
+	echo "nginx runing (PID=$PID_nginx)"
+elif [ $? -ne  0 ];then
+	pkill  -9 nginx
+	/opt/server/nginx/sbin/nginx
+PID=$(ps -ef |grep nginx |grep master |awk {'print $2'})	
+	echo  "nginx restart "
+	echo  "nginx runing (PID$PID)"
+else 
+	echo "$?"
+fi

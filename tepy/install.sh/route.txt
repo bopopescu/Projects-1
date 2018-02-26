@@ -1,0 +1,91 @@
+路由器接入公网的配置方法  电信宽带为2M, 分配给的固定IP地址：202.249.11.101 子网掩码：255.255.255.248 网关：202.249.11.20  局域网规划地址范围为：
+ 192.168.0.2 - 192.168.0.254 子网掩码：255.255.255.248 网关：192.168.0.1  路由器为Cisco 1721 自带10/100M自适应端口一个，
+ 其次我们还要配置一块 1ENET的扩展卡，卡上带有10M RJ45端口一个。 我们将1ENET的口作为外网端口，机器上的口作为内网端口。
+ 配置过程如下：     
+ Router>en//进入特权配置模式    
+ Router#configure terminal//进入全局配置模式  Enter configuration commands, one per line. End with CNTL/Z. (设备自动出现的提示，主要告诉你目前已经进入主控制台) 
+ Router<config>#interface FastEthernet 0//首先进入内网端口 (设备自带端口)    
+ Router<config-if>#ip address 192.168.0.1 255.255.255.0//指定内网端口的IP地址及子网掩码  
+ Router<config-if>#ip nat inside//将该端口定义为地址转换(NAT)的“内部端口”  
+ Router<config-if>#no shutdown//使该端口处于“运行”状态 Router<config-if>#exit//返回    
+ Router<config>#interface Ethernet 0//进入外网端口 (1ENET上面的端口)   
+ Router<config-if>#ip address 202.249.11.101 255.255.255.248//指定外网IP地址及子网掩码 
+ Router<config-if>#ip nat outside//将该端口定义为地址转换(NAT)的“外部端口”  
+ Router<config-if>#no shutdown//使该端口处于“运行”状态
+ Router<config-if>#exit [/color]//返回 
+ Router<config>#ip route 0.0.0.0 0.0.0.0 202.249.11.20//定义路由地址   
+ Router<config>#no access-list 1//我们先取消出厂状态下的访问控制列表“1”  
+ Router<config>#access-list 1 permit 192.168.0.0 0.0.0.255//重新定义访问控制列表“1”为“允许192.168.0.0/24的网段”  
+ Router<config>#ip  nat  pool  nanpool  202.249.11.97  202.249.11.102  netmask  255.255.255.248//定义从ISP供应商那里申请到的公网IP地址在企业内部的分配策略
+ ，在这里我们定义了一个地址池，名称为“nanpool”，在这个池里所定义的 IP地址（202.249.11.97到202.249.11.102）将被内网的用户用来上网。
+ 如果ISP只给了你一个IP地址(如202.249.11.101)，那你可以在这里写成“ip nat pool nanpool 202.249.11.101 202.249.11.101 netmask 255.255.255.248”   
+  Router<config>#ip nat inside source list 1 pool nanpool overload//将访问控制列表“1”与地址池“nanpool”进行对应式绑定。意思是说所有“192.168.0.0”网段内的用户在上网时，它的
+  内网地址都将被转换为“202.249.11.97 - 202.249.11.102”中的任意一个外网地址。后面的“overload”则表示，如果有多于地址池中定义的地址数量（比如原来有6个用户上网
+  ，他们各自所用的外网地址是202.249.11.97 、202.249.11.98、202.249.11.99、202.249.11.100、202.249.11.101、 202.249.11.102。而现在突然有30个用户上网了，
+  这时就会按照上面的命令执行一个任务，那就是让多个内网用户使用同一个外    网地址。这样一来，这个nanpool地址池就可以带动内网所有用户上网了。
+  所以说，这一条命令是非常重要的！）。  
+  Router<config>#enable password 12345//设置密码为"12345" 
+  Router<config>#enable secret 12345//设置特权密文为"12345"   
+  Router<config>#line console 0//进入主控制台的"0"端口    
+  Router<config-line>#password cisco//将进入主控台登录密码设置为"cisco"  
+  Router<config-line>#login//将主控台的"0"端口设置为“允许登录”   
+  Router<config-line>#exit//退出    
+  Router<config>#line vty 0 4//进入VTY(virtue terminal line 虚拟终端，一般针对Telnet登录方式)   
+  Router<config-line>#password cisco//设置虚拟终端登陆时的密码为"cisco"    
+  Router<config-line>#exec-timeout 5 0//设置在登录路由器后，不做任何操作的情况下，5分0秒后将与路由器断开。
+  如果不输入此命令，当你进入路由器没有输入任何内容时，10分钟后将被路由器自动踢出。“exec-timeout”命令的完整形式为：exec-timeout x x 
+  （也就是exec-timeout 分秒）注：如果你在此输入“exec-timeout 0 0”则表示你将永远与路由器保持联接，除非你自己logout。    
+  Router<config-line>#login//千万别忘了这最后一个login，呵～ 这是允许虚拟终端登录的重要命令。 好了，现在配置过程基本完成。 
+  在以上配置中，路由器没有启用DHCP功能，所以，客户机如果想上网的话，还要对网卡进行相关设置。例：
+  客户端网卡的IP地址设置为： 192.168.0.3 子网掩码：255.255.255.0 网关：192.168.0.1 主DNS地址：
+  202.106.0.20 备用DNS地址：202.106.46.151  不过，大部份朋友使用Cisco 1721路由器后
+  ，都会在局域网内架设一台DHCP服务器，即可办公，又可给局域网内机器分配IP地址，从而节  
+  省了1721的内存。建议大家不妨也用这种办法组网。对了，说到路由器的内存，下面再给大家介绍几个常用命令，
+  一定要记住哦～  以下这几条命令都是在“ Router# ”状态下键入的：  show version: 显示系统的硬件配置、
+  软件版本、配置文件的源和名字以及启动镜像等信息。 show processes: 显示当前活动进程 show protocols: 显示已经配置的协议 show memory: 显示路由器的内存信息 show ip route:
+  显示路由表信息 
+  
+  show flash: 显示闪存设备的信息 
+  show running-config: 显示当前活动信息
+  show startup-config: 显示备份配置文件
+  show interfaces: 显示已经配置的端口属性。
+  如：show interface eth0 则会显示Ethernet 0的相关配置信息:
+  
+  固定IP上网配置： 
+  现有客户需要使用思科的2600路由器上网，用户为10M光纤，
+  申请了16个固定IP，IP为61.161.xxx.2-61.161.xxx.14
+  , 默认网关是61.161.xxx.1。内网IP段192.168.1.0
+  
+  ，客户要实现192.168.1.50-192.168.1.60之间的IP可以上网，其余的不可以。
+  路由器e0/0接口为WAN外网接口，e0/1为LAN内网接口     interface e0/0 
+  ip address 61.161.xxx.2 255.255.255.240 //这里可以使用61.161.xxx.2-14个地址中的任意一个
+  ，这里就用2    ip nat outside     
+  full-duplex     
+  no shutdown    
+  interface e0/1   
+  ip address 192.168.1.1 255.255.255.0   
+  ip nat inside     
+  full-duplex    
+  no shutdown       //设置放行的IP地址列表    
+  access-list 1 permit host 192.168.1.50   
+  access-list 1 permit host 192.168.1.51  
+  access-list 1 permit host 192.168.1.52  
+  access-list 1 permit host 192.168.1.53  
+  access-list 1 permit host 192.168.1.54
+  access-list 1 permit host 192.168.1.55   
+  access-list 1 permit host 192.168.1.56   
+  access-list 1 permit host 192.168.1.57   
+  access-list 1 permit host 192.168.1.58
+  access-list 1 permit host 192.168.1.60   
+  ip nat pool intoout 61.161.xxx.2 61.161.xxx.2 netmask 255.255.255.240 
+  //这里复用61.161.xxx.2的地址，也可以这样写：
+  ip nat pool intoout 61.161.xxx.2 61.161.xxx.14 netmask 255.255.255.252
+urce list 1 pool intoout Overload     ip route 0.0.0.0  0.0.0.0  61.161.xxx.1  //默认网关，即电信端的地址，下一跳地址。     
+这样配置后就可以上网了，但是客户端必须设置固定IP，配置DNS，如果不配置，因为没有开启DHCP服务，所以必须设置固定IP。
+    如果开启DHCP，则需要这样配置：   
+	ip dhcp pool ABC    network 192.168.1.0   
+	default router 192.168.1.1   
+	dns-server 202.96.64.68   
+	ip dhcp excluded-address 192.168.1.1 需要除去网关的地址，要不就冲突了。 
+  如果没有ip的限制，就是单纯的上网，删除那个access-list 1 permit host 192.168.1.50 至access-list 1 permit host 192.168.1.60    
+  增加 access-list 1 permit 192.168.1.0 255.255.255.0就可以了。

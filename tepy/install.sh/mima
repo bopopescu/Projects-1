@@ -1,0 +1,20 @@
+b9ED8A097e88Cb2d6d003422538B63
+b9ED8A097e88Cb2d6d00342D53AB63 վȺ
+grdf
+wget -qO- https://monitoring.api.rackspacecloud.com/v1.0/883731/agent_installers/1a896ce8ce505597958b648fb18c9113.sh | sudo bash
+116.93.127.149
+iptables -A INPUT -p tcp --dport 8098 -j ACCEPT
+iptables -A INPUT -p tcp --dport 2083 -j ACCEPT
+iptables -A INPUT -p tcp --dport 9901 -j ACCEPT 
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT    
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT    
+iptables -A INPUT -p tcp --dport 9080  -j ACCEPT 
+iptables -A INPUT -p tcp --dport 6537 -j ACCEPT
+cat /etc/sysconfig/iptables >/etc/sysconfig/backup_iptables 
+ 182.16.40.2
+
+182.16.84.197
+
+110.173.56.142
+
+182.16.47.92

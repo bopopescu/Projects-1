@@ -1,0 +1,15 @@
+name = input("Name:")
+age = input("Age:")
+job = input("Job:")
+hobbie = input("Hobbie:")
+
+info = '''
+------------ info of %s ----------- #这里的每个%s就是一个占位符，本行的代表 后面拓号里的 name
+Name  : %s  #代表 name
+Age   : %s  #代表 age
+job   : %s  #代表 job
+Hobbie: %s  #代表 hobbie
+------------- end -----------------
+''' %(name,name,age,job,hobbie)  # 这行的 % 号就是 把前面的字符串 与拓号 后面的 变量 关联起来
+
+print(info)

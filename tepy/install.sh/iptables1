@@ -1,0 +1,6 @@
+iptables -I INPUT -p tcp --dport 2080 -j ACCEPT
+ iptables -I INPUT -p tcp --dport 2082 -j ACCEPT   
+ iptables -I INPUT -p tcp --dport 8098 -j ACCEPT    
+ iptables -I INPUT -p tcp --dport 82 -j ACCEPT   
+ iptables -I INPUT -p tcp --dport 6537 -j ACCEPT
+ iptables -I INPUT -p tcp --dport 80 -j ACCEPT

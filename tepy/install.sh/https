@@ -1,0 +1,63 @@
+﻿cat ip.hash
+upstream http-net{
+    server 127.0.0.1:28000 max_fails=1 fail_timeout=600s weight=6;
+                }
+cat gak_01ssc_net.conf
+server{
+ listen 80;
+ charset  utf-8;
+ server_name _;
+ index index.php;
+location ^~ /.well-known/acme-challenge/ {
+  alias /opt/wwwroot/letsencrypt/;
+ }
+location / {
+proxy_connect_timeout 600s;
+proxy_read_timeout 600s;
+proxy_pass http://http-net/;
+proxy_redirect             off;
+proxy_set_header           Host $host;
+proxy_set_header           X-Real-IP $remote_addr;
+proxy_set_header           X-Forwarded-For $proxy_add_x_forwarded_for;
+client_max_body_size       10m;
+client_body_buffer_size    512k;
+proxy_send_timeout         600s;
+proxy_buffer_size          4k;
+proxy_buffers              4 32k;
+proxy_busy_buffers_size    64k;
+proxy_temp_file_write_size 64k;
+ }
+}
+server{
+        server_name _;   #填写域名，或者_默认
+        listen 443 ssl http2;
+        index index.php;
+		charset utf-8;
+        ssl on;   #启用ssl认证
+        ssl_certificate /etc/dehydrated/certs/gbak.01ssc.net/fullchain.pem;   #域名证书https
+        ssl_certificate_key /etc/dehydrated/certs/gbak.01ssc.net/privkey.pem; #签名秘钥证书
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+        ssl_ciphers EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+        ssl_prefer_server_ciphers  on;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+location / {
+        proxy_pass http://http-net;     #代理地址是ip.hash的里的代理地址里的地址和端口
+        proxy_redirect   off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        client_max_body_size 10m;
+        client_body_buffer_size    128k;
+        proxy_send_timeout 90;
+        proxy_buffer_size 4k;
+        proxy_buffers     4 32k;
+        proxy_busy_buffers_size    64k;
+        proxy_temp_file_write_size 64k;
+        proxy_cache_valid 200 302 1m;
+        add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header X-Content-Type-Options nosniff;
+        expires     888s;
+}
+}

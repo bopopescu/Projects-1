@@ -1,0 +1,36 @@
+1 定义
+		 模块：用来从逻辑上组织python代码（变量，函数，类，逻辑，实现一个功能），本质就是。py结尾的python文件(文件名：test.py ，对应的模块名：test)
+		 包：用来从逻辑上组织模块的，本质就是一个文件或者目录，(必须带有一个__init__.py文件)
+
+
+2 导入方法
+		import module_LD.name
+		import module_LD.name,module_02  #单个模块多功能导入
+		from module_LD import *  #导入所有的模块功能
+		from module_LD import logger as looggr_alex #as 定义别名
+3 import本质 （路径搜索和搜索路径）
+		导入模块的本质就是把python文件解释一遍(import  test test='test.py all code')(from test import m1 )
+		import module_name ----->module_name.py  ---->module_name.py 的路径 ---->sys.path变量搜索路径
+		导入包的本质就是执行该包下的__init_.py文件
+
+4 导入优化
+		from  module_test import  test   或者添加别名 as  test1 
+
+5 模块分类
+		三大类
+		a: 标准库
+			1、time与datetime 
+			一：内建模块
+				time和datetime（http://www.jb51.net/article/49326.htm）
+				在Python中，通常有这几种方式来表示时间：1）时间戳 2）格式化的时间字符串 3）元组（struct_time）共九个元素。由于Python的time模块实现主要调用C库，所以各个平台可能有所不同。
+				UTC（Coordinated Universal Time，世界协调时）亦即格林威治天文时间，世界标准时间。在中国为UTC+8。DST（Daylight Saving Time）即夏令时。
+				时间戳（timestamp）的方式：通常来说，时间戳表示的是从1970年1月1日00:00:00开始按秒计算的偏移量。我们运行“type(time.time())”，返回的是float类型。返回时间戳方式的函数主要有time()，clock()等。
+				元组（struct_time）方式：struct_time元组共有9个元素，返回struct_time的函数主要有gmtime()，localtime(sstrptime()。下面列出这种方式元组中的几个元素：
+				strftime(“格式”，struct_time) ----> "格式化字符串"
+					 time.strftime("%Y-%m-%d %H:%M:%S",x)
+				strptime("格式化的字符串","格式") ---> struct_time
+					 time.strptime('2017-09-18 13:28:51',"%Y-%m-%d %H:%M:%S")
+					 
+		b: 开源模块（第三方库）
+		c: 自定模块 
+测试库

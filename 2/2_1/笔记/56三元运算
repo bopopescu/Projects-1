@@ -1,0 +1,19 @@
+三元运算又称三目运算 是对简单的条件语句的简写
+
+if 条件成立：
+    val = 1
+else：
+    val = 2
+
+改成三元运算
+val = 1 if 条件成立  else  2
+>>> a = 2
+>>> b =5
+>>> val =a  if  a <b  else b
+>>> val
+2
+
+>>> a = 3
+>>> b = 6
+>>> val = b if  a > b else  a
+>>> val

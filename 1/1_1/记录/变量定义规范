@@ -1,0 +1,49 @@
+变量定义规范
+  变量定义声明  name = "Alex Li"
+
+
+变量定义规则
+  变量名只能是 字母、数字或下划线的任意组合
+变量名的第一个字符不能是数字
+以下关键字不能声明为变量名['and', 'as', 'assert', 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
+'exec', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'not', 'or', 'pass', 'print', 'raise', 'return', 'try', 'while', 'with', 'yield']31
+
+定义方式
+
+驼峰体
+
+AgeOfOldboy = 56
+NumberOfStudents = 80
+下划线
+
+age_of_oldboy = 56
+number_of_students = 80
+你觉得哪种更清晰，哪种就是官方推荐的，我想你肯定会先第2种,第一种AgeOfOldboy咋一看以为是AngelaBaby
+变量的修改
+
+。。。。
+
+定义变量不好的方式举例
+
+变量名为中文、拼音
+变量名过长
+变量名词不达意
+
+
+>>> a =1
+>>>
+>>> b =1
+>>> a
+1
+>>> b
+1
+>>> a = 3
+>>> a
+3
+>>> b
+1
+常量全部大写
+
+常量即指不变的量 如pai3.141592653...，或者程序运行中不会改变的量 在python中没有一个专门的语法代表常量，程序员约定俗成用变量名全部大写代表常量
+
+AFG_OF_OLDBE = 58

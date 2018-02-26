@@ -1,0 +1,137 @@
+﻿#!/bin/bash
+# install LNMP
+funtion installLANP(){
+		yum install -y openssl-devel libmcrypt epel-release make  m4 gcc bzip2 curl-devel  libjpeg-devel  libpng-devel  freetype-devel gmp-devel pcre-devel glib2-devel openssl libxml2 libtermcap-devel ncurses-devel GeoIP GeoIP-devel libpcap
+		yum install -y libxml2-devel libxml2-devel gcc-c++ wget gdb php-mcrypt psmisc cpp  zlib-devel curl mysql mysql-devel gd gd-devel mhash-devel libmcrypt-devel bzip2-devel autoconf libevent-devel subversionntp lua lua-devel libcurl libcurl-devel libpcap-devel  openssl-libs
+		}
+funtion installNGINX(){
+				rpm -qa|grep nginx
+		if [$? -eq  1 ];then
+                echo "*************************************************"
+                echo "****************install nginx********************"
+                echo "**************************************************"
+                cd /usr/src/
+                wget http://119.9.108.199:3357/iso/nginx-1.10.3.tar.gz
+                wget http://119.9.108.199:3357/iso/pcre-8.39.tar.gz
+                tar xvf pcre-8.39.tar.gz 
+                cd pcre-8.39
+                ./configure &&make &&make install&&cd ..
+                tar xvf nginx-1.10.3.tar.gz
+                cd nginx-1.10.3
+                ./configure --prefix=/usr/local/nginx --without-http_memcached_module --user=nobody --group=nobody  --http-fastcgi-temp-path=/tmp/fastcgi_temp  --http-client-body-temp-path=/tmp/client_body_temp  --without-http_autoindex_module --without-http_scgi_module   --without-http_uwsgi_module  --with-http_gzip_static_module --with-http_stub_status_module --with-pcre=/usr/src/pcre-8.39 --http-proxy-temp-path=/tmp/nginx_proxy_temp    --with-openssl=/usr --without-poll_module  --with-http_gzip_static_module  --with-http_gunzip_module 
+                make &&make install &&cd ..
+                rm -rf nginx*
+                rm -rf pcre*
+				echo "
+#!/bin/bash
+# nginx Startup script for the Nginx HTTP Server
+# it is v.0.0.2 version.
+# chkconfig: - 85 15
+# description: Nginx is a high-performance web and proxy server.
+# It has a lot of features, but it's not for everyone.
+# processname: nginx
+# pidfile: /var/run/nginx.pid
+# config: /usr/local/nginx/conf/nginx.conf
+nginxd=/usr/local/nginx/sbin/nginx
+nginx_config=/usr/local/nginx/conf/nginx.conf
+nginx_pid=/var/run/nginx/nginx.pid
+RETVAL=0
+prog="nginx"
+# Source function library.
+. /etc/rc.d/init.d/functions
+# Source networking configuration.
+. /etc/sysconfig/network
+# Check that networking is up.
+[ ${NETWORKING} = "no" ] && exit 0
+[ -x $nginxd ] || exit 0
+# Start nginx daemons functions.
+start() {
+if [ -e $nginx_pid ];then
+echo "nginx already running...."
+exit 1
+fi
+echo -n $"Starting $prog: "
+daemon $nginxd -c ${nginx_config}
+RETVAL=$?
+echo
+[ $RETVAL = 0 ] && touch /var/lock/subsys/nginx
+return $RETVAL
+}
+# Stop nginx daemons functions.
+stop() {
+echo -n $"Stopping $prog: "
+killproc $nginxd
+RETVAL=$?
+echo
+[ $RETVAL = 0 ] && rm -f /var/lock/subsys/nginx /var/run/nginx/nginx.pid
+}
+reload() {
+echo -n $"Reloading $prog: "
+#kill -HUP `cat ${nginx_pid}`
+killproc $nginxd -HUP
+RETVAL=$?
+echo
+}
+# See how we were called.
+case "$1" in
+start)
+start
+;;
+stop)
+stop
+;;
+reload)
+reload
+;;
+restart)
+stop
+start
+;;
+status)
+status $prog
+RETVAL=$?
+;;
+*)
+echo $"Usage: $prog {start|stop|restart|reload|status|help}"
+exit 1
+esac
+exit $RETVAL
+" >/etc/init.d/nginx
+mkdir /var/run/nginx  
+chmod +x /etc/init.d/nginx
+service nginx start
+
+		elif [ $? -eq 0 ]; then
+			yum remove nginx -y &>/dev/unll
+			sleep 10s
+			echo "*************************************************"
+			echo "*****************卸载系统nginx服务*******************"
+			echo "*************************************************"
+		else
+			exit 1 
+			echo "***********错误******************"
+		fi
+				}
+
+	funtion installMySQL(){
+		
+		
+}		
+
+
+
+
+
+
+
+		funtion installPHP(){
+		ps -ef |grep php |grep master |grep -v grep |awk {'print $2'}
+		if []
+		
+		cd /usr/src/
+		wget http://119.9.108.199:3357/iso/php-5.6.30.tar.gz 
+		}
+
+
+
+./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --with-mysqli --with-gd --with-iconv --with-zlib --enable-xml --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization  --enable-mbregex --enable-fpm --enable-mbstring --enable-ftp --enable-gd-native-ttf --with-openssl --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap --without-pear --with-gettext --enable-session --with-mcrypt --with-curl
