@@ -22,6 +22,7 @@ BOT_TOKEN = '556230219:AAHQ4xKOL7KNlxqfI0MRz0B9GaoP60wLmr4'
 tb = telebot.TeleBot(BOT_TOKEN)
 z = Zabbix()
 user_limit = [ '-210815767']
+
 master = '-210815767'
 signal.signal(signal.SIGINT, signal_handler)  # ctrl-c kill
 signal.signal(signal.SIGTERM, signal_handler)  # default kill
@@ -29,7 +30,7 @@ message_new_id = message_old_id = 0
 while 1:
     print
     'Running...'
-    mess_list = tb.get_updates(timeout=3)[::-1]
+    mess_list = tb.get_updates(timeout=3)
     for mess_obj in mess_list:
         try:
             message_new_id = mess_obj.message.message_id
@@ -71,11 +72,11 @@ while 1:
 
     time.sleep(1)
 
-def getHost(self):
-    data = json.dumps({
-        'jsonrpc': '2.0',
-        'method': 'host.get',
-        'params': self.para_dic['host.get'],
-        'auth': self.auth,
-        'id': 1,
-    })
+# def getHost(self):
+#     data = json.dumps({
+#         'jsonrpc': '2.0',
+#         'method': 'host.get',
+#         'params': self.para_dic['host.get'],
+#         'auth': self.auth,
+#         'id': 1,
+#     })
