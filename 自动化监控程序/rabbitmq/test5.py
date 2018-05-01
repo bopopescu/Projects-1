@@ -23,7 +23,7 @@ channel.basic_consume(callback, queue='test_queue', no_ack=False)
 channel.start_consuming()
 """
 import pika,time,threading
-credentials = pika.PlainCredentials('admin','admin')
+credentials = pika.PlainCredentials('guest', 'guest')
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.192.112', 5672, '/', credentials))
 
@@ -45,4 +45,3 @@ channel.basic_consume(callback, queue='test_queue', no_ack=True)
 # 开始接收信息，并进入阻塞状态，队列里有信息才会调用callback进行处理。按ctrl+c退出。
 
 channel.start_consuming()
-

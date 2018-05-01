@@ -38,11 +38,10 @@ def test(ch, method, properties, body):
 def callback(ch,method,properties,boody):
     t = threading.Thread(target=test,args=(ch,method,properties,boody))
     t.start()
-channel.basic_qos(prefetch_count=10000 )
+channel.basic_qos(prefetch_count=0 )
 # 告诉RabbitMQ使用callback来接收信息
 channel.basic_consume(callback, queue='test_queue', no_ack=True)
 # print('waiting...')
 # 开始接收信息，并进入阻塞状态，队列里有信息才会调用callback进行处理。按ctrl+c退出。
 
 channel.start_consuming()
-

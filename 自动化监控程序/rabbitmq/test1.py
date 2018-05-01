@@ -12,7 +12,7 @@ KEVIM = 'Kevim Liu'
 #     print('sent ....',i)
 # connection.close()
 import pika
-credentials = pika.PlainCredentials('guest','guest')
+credentials = pika.PlainCredentials('admin','admin')
 connection = pika.BlockingConnection(pika.ConnectionParameters('192.168.192.112',5672,'/',credentials))
 channel = connection.channel()
 
@@ -20,7 +20,7 @@ channel = connection.channel()
 channel.queue_declare(queue='test_queue')
 
 # n RabbitMQ a message can never be sent directly to the queue, it always needs to go through an exchange.
-for i in range(100):
+for i in range(100000):
 
     channel.basic_publish(exchange='', routing_key='test_queue', body='Hello World!' + str(i))
 

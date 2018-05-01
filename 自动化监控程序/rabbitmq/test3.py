@@ -2,6 +2,7 @@
 #_*_ coding:utf-8 _*_
 KEVIM = 'Kevim Liu'
 # lau.liu@9street.org
+
 """
 import pika,time,threading
 credentials = pika.PlainCredentials('admin', 'admin')
@@ -45,4 +46,3 @@ channel.basic_consume(callback, queue='test_queue', no_ack=True)
 # 开始接收信息，并进入阻塞状态，队列里有信息才会调用callback进行处理。按ctrl+c退出。
 
 channel.start_consuming()
-
