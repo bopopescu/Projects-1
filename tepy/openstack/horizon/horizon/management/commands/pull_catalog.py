@@ -19,14 +19,14 @@ from django.utils import translation
 import requests
 
 ZANATA_LOCALES = requests.get("https://translate.openstack.org/rest/project"
-                              "/horizon/version/master/locales").json()
+                              "/horizon/version/main/locales").json()
 LANGUAGE_CODES = [x['localeId'] for x in ZANATA_LOCALES]
 DOMAINS = ['django', 'djangojs']
 MODULES = ['horizon', 'openstack_dashboard']
 PROJECT = 'horizon'
 POFILE = "{module}/locale/{locale}/LC_MESSAGES/{domain}.po"
 POFILE_URL = ("https://translate.openstack.org/rest/file/translation/{project}"
-              "/master/{language}/po?docId={module}%2Flocale%2F{domain}")
+              "/main/{language}/po?docId={module}%2Flocale%2F{domain}")
 
 
 class Command(BaseCommand):

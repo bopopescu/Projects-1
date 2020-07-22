@@ -4392,7 +4392,7 @@ class TestReconstructFragmentArchive(BaseTestObjectReconstructor):
         # function is that it will cause a bunch of warning log from
         # liberasurecode[1].
         # 1: https://github.com/openstack/liberasurecode/blob/
-        #    master/src/erasurecode.c#L870
+        #    main/src/erasurecode.c#L870
         log_prefix = 'Reconstruct frag #%s with frag indexes' % broken_node
         self.assertIn(log_prefix, debug_log_lines[1])
         self.assertFalse(debug_log_lines[2:])

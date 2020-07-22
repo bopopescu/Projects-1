@@ -60,14 +60,14 @@ cli_opts = [
                help=("Pass in your authentication token if you have "
                      "one. If you use this option the same token is "
                      "used for both the source and the target.")),
-    cfg.StrOpt('mastertoken',
+    cfg.StrOpt('maintoken',
                short='M',
                default='',
                deprecated_since='Pike',
                deprecated_reason='use sourcetoken instead',
                help=("Pass in your authentication token if you have "
                      "one. This is the token used for the source system.")),
-    cfg.StrOpt('slavetoken',
+    cfg.StrOpt('subordinatetoken',
                short='S',
                default='',
                deprecated_since='Pike',
@@ -89,13 +89,13 @@ CONF.register_cli_opts(cli_opts)
 CONF.register_opt(
     cfg.StrOpt('sourcetoken',
                default='',
-               deprecated_opts=[cfg.DeprecatedOpt('mastertoken')],
+               deprecated_opts=[cfg.DeprecatedOpt('maintoken')],
                help=("Pass in your authentication token if you have "
                      "one. This is the token used for the source.")))
 CONF.register_opt(
     cfg.StrOpt('targettoken',
                default='',
-               deprecated_opts=[cfg.DeprecatedOpt('slavetoken')],
+               deprecated_opts=[cfg.DeprecatedOpt('subordinatetoken')],
                help=("Pass in your authentication token if you have "
                      "one. This is the token used for the target.")))
 
